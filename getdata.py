@@ -24,24 +24,24 @@ def getPieChart(dataframe, brandname):
 def getbarchart(dataframe,brandname):
     dataframe = dataframe[dataframe['brand'] == brandname] 
     dataframe =  dataframe[dataframe['event_type'] == 'purchase']
-    dataframe = dataframe['category_code'].value_counts().reset_index().head(4)
-    dataframe.columns = ['category_code','count']
-    fig3 = px.bar(dataframe, x='category_code', y='count', color='category_code' )
+    dataframe = dataframe.groupby('category_code')['price'].sum()
+    dataframe = pd.DataFrame({'category':dataframe.index, 'sales':dataframe.values}).sort_values('sales',ascending=False).head(4)
+    fig3 = px.bar(dataframe, x='category', y='sales', color='category' )
     return fig3
 
-def gethorizontalchart(dataframe,brandname):
+def getbarchartcust(dataframe,brandname):
     dataframe = dataframe[dataframe['event_type'] == 'purchase']
     dataframe = dataframe[dataframe['brand'] == brandname] 
-    dataframe = dataframe['user_id'].value_counts().head(5).reset_index()
-    dataframe.columns = ['user_id', 'count']
-    fig4 = px.bar(dataframe, x='count', y='user_id',orientation='h') 
-    fig4.update_layout(yaxis = dict(tickformat = ',d'))
+    dataframe = dataframe.groupby('user_id')['price'].sum()
+    dataframe = pd.DataFrame({'user':dataframe.index, 'purchase':dataframe.values}).sort_values('purchase', ascending=False).head(5)
+    fig4 = px.bar(dataframe, x='user', y='purchase') 
+    fig4.update_layout(xaxis = dict(tickformat = ',d'))
     return fig4
 
 def getTotalsales(dataframe,brandname):
     dataframe = dataframe[(dataframe['event_type'] == 'purchase') & (dataframe['brand'] == brandname)]
     dataframe = dataframe.groupby('brand')['price'].sum().reset_index()
     dataframe.columns = ['brand', 'price']
-    dataframe = st.metric(label='Total Sales', value=dataframe['price'])
+    dataframe = st.metric(label='Total Sales:dollar:',  value=dataframe['price'])
     return dataframe
 

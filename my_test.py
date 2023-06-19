@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-from getdata import getLineChart, getPieChart,getbarchart,gethorizontalchart,getTotalsales
+from getdata import getLineChart, getPieChart,getbarchart,getbarchartcust,getTotalsales
 
 st.set_page_config(page_title = 'Sales Dashboard', layout='wide')
 df = pd.read_csv('./data/final.csv')
@@ -32,7 +32,7 @@ with fig3:
    st.plotly_chart(getbarchart(df,options))
 with fig4:
     st.subheader('Top Customers id')
-    st.plotly_chart(gethorizontalchart(df,options))
+    st.plotly_chart(getbarchartcust(df,options))
 
 
 
